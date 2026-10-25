@@ -1,0 +1,43 @@
+# syntax=docker/dockerfile:1
+# ==============================================================================
+# Multi-Arch Dockerfile: AWS Graviton4 (arm64v8) + Cloud-Optimized OpenCV (COOL)
+# Target Hardware: AWS EC2 c8g.xlarge / AWS Lambda arm64 (Neoverse-V2 SVE2)
+# Build Command:
+#   docker buildx build --platform linux/arm64,linux/amd64 \
+#     -f Dockerfile.graviton_cool -t opencv26-agentic-inspector:latest .
+# ==============================================================================
+FROM public.ecr.aws/amazonlinux/amazonlinux:2023
+
+LABEL maintainer="Vigneshwara Kireeti Alugunulla <getplacedoff@gmail.com>"
+LABEL author="Vigneshwara Kireeti Alugunulla"
+LABEL competition="OpenCV AI Competition 2026, powered by AWS"
+LABEL eligible_awards="Agentic Vision Award & Best Use of COOL Award"
+
+RUN dnf update -y && dnf install -y \
+    python3.11 python3.11-pip python3.11-devel \
+    gcc gcc-c++ cmake ninja-build git \
+    mesa-libGL glib2 && dnf clean all
+
+# Enable Arm KleidiCV / Neon / SVE2 SIMD acceleration flags for COOL on AWS Graviton4
+ENV OPENCV_COOL_NEON_SVE2_ENABLED=1
+ENV COOL_HARDWARE_TARGET="AWS_GRAVITON4_C8G_ARM64"
+ENV OMP_NUM_THREADS=4
+ENV PYTHONUNBUFFERED=1
+ENV AWS_DEFAULT_REGION=us-east-1
+
+WORKDIR /app
+COPY requirements.txt pyproject.toml /app/
+RUN python3.11 -m pip install --no-cache-dir --upgrade pip && \
+    python3.11 -m pip install --no-cache-dir -r requirements.txt
+
+COPY agentic_vision_inspector.py cool_benchmark_profiler.py evaluate.py aws_bedrock_mcp_server.py test_suite.py /app/
+COPY README.md scope_and_rules.md /app/
+
+# Run automated unit tests & SIMD profiler verification during container build
+RUN python3.11 test_suite.py && python3.11 cool_benchmark_profiler.py
+
+EXPOSE 8080
+HEALTHCHECK --interval=15s --timeout=3s --start-period=5s --retries=3 \
+  CMD python3.11 -c "import cv2, numpy; assert cv2.__version__" || exit 1
+
+CMD ["python3.11", "aws_bedrock_mcp_server.py", "--port", "8080"]

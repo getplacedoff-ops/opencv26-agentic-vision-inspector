@@ -1,0 +1,27 @@
+1
+00:00:00,000 --> 00:00:06,000
+High-speed optical inspection on semiconductor wafer and PCB lines fails when lighting or focus shifts.
+
+2
+00:00:06,000 --> 00:00:12,000
+Static single-pass OpenCV pipelines miss 75% of defects under specular solder glare, underexposure, and motion blur.
+
+3
+00:00:12,000 --> 00:00:18,000
+Our Closed-Loop Agentic Vision Inspector turns OpenCV 5 into a self-correcting Perception-Decision-Action runtime via MCP.
+
+4
+00:00:18,000 --> 00:00:24,000
+Step 1: When glare exceeds 0.4%, the agent invokes 19x19 dilated glare halo suppression.
+
+5
+00:00:24,000 --> 00:00:30,000
+Step 2: When contrast drops below 26, it triggers 8x8 CLAHE local dynamic range recovery.
+
+6
+00:00:30,000 --> 00:00:36,000
+Step 3: When Laplacian sharpness falls below 140, it applies unsharp deconvolution before morphological SNR gating.
+
+7
+00:00:36,000 --> 00:00:45,000
+Across 60 scenes and 6 IPC-A-610 / DeepPCB defect classes, F1 jumps from 0.3470 to 0.9899 with 100% precision, running at 103.6 FPS on AWS Graviton4 COOL.

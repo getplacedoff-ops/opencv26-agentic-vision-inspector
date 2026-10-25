@@ -1,0 +1,76 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: >
+  OpenCV AI Competition 2026 — Closed-Loop Agentic Vision Inspector on AWS Graviton4 (arm64 COOL)
+  integrated with Amazon Bedrock AgentCore MCP Action Group, S3 Optical Frame Ingestion,
+  DynamoDB Trace Audit Ledger, and AWS IoT Core Conveyor Actuation.
+
+Globals:
+  Function:
+    Timeout: 30
+    MemorySize: 2048
+    Architectures:
+      - arm64
+    Environment:
+      Variables:
+        OPENCV_COOL_NEON_SVE2_ENABLED: "1"
+        INSPECTION_SNR_GATE: "1.15"
+        LAPLACIAN_BLUR_GATE: "140.0"
+        GLARE_SATURATION_GATE: "0.004"
+        HITL_CONFIDENCE_FLOOR: "0.75"
+        TRACE_TABLE_NAME: !Ref InspectionTelemetryTable
+
+Resources:
+  AgenticVisionGravitonFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      PackageType: Image
+      Description: "Executes the 4-step OpenCV 5 / COOL Perception-Decision-Action loop on AWS Graviton arm64"
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: !Ref InspectionTelemetryTable
+        - S3ReadPolicy:
+            BucketName: !Ref WaferInspectionFrameBucket
+      Events:
+        InspectHttpApi:
+          Type: Api
+          Properties:
+            Path: /v1/inspect
+            Method: post
+        BedrockAgentActionTrigger:
+          Type: Api
+          Properties:
+            Path: /v1/mcp/tools
+            Method: post
+    Metadata:
+      Dockerfile: Dockerfile.graviton_cool
+      DockerContext: .
+      DockerTag: graviton4-cool-v2
+
+  WaferInspectionFrameBucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketEncryption:
+        ServerSideEncryptionConfiguration:
+          - ServerSideEncryptionByDefault:
+              SSEAlgorithm: AES256
+
+  InspectionTelemetryTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: OpenCV26AgenticInspectionTraces
+      BillingMode: PAY_PER_REQUEST
+      AttributeDefinitions:
+        - AttributeName: frame_id
+          AttributeType: S
+      KeySchema:
+        - AttributeName: frame_id
+          KeyType: HASH
+
+Outputs:
+  InspectApiEndpoint:
+    Description: "API Gateway URL for live OpenCV Agentic Inspection & MCP Server"
+    Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/v1/inspect"
+  GravitonFunctionArn:
+    Description: "ARN of the Arm64 Graviton COOL Lambda Function for Bedrock AgentCore Action Group"
+    Value: !GetAtt AgenticVisionGravitonFunction.Arn

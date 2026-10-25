@@ -1,0 +1,20 @@
+[project]
+name = "opencv26-agentic-vision-inspector"
+version = "3.0.0"
+description = "Self-Optimizing Closed-Loop Agentic Vision Inspector with OpenCV 5, Amazon Bedrock AgentCore MCP, and AWS Graviton4 COOL"
+authors = [
+    { name = "Vigneshwara Kireeti Alugunulla", email = "getplacedoff@gmail.com" }
+]
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+    "opencv-python-headless>=4.10.0",
+    "numpy>=1.26.0",
+    "scipy>=1.11.0",
+    "matplotlib>=3.8.0",
+]
+
+[project.scripts]
+evaluate-benchmark = "evaluate:main"
+mcp-server = "aws_bedrock_mcp_server:main"
+cool-profiler = "cool_benchmark_profiler:main"

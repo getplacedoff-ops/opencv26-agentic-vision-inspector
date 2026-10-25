@@ -1,0 +1,652 @@
+{
+  "competition": "OpenCV AI Competition 2026, powered by AWS",
+  "author": "Vigneshwara Kireeti Alugunulla",
+  "num_test_scenes": 60,
+  "defect_taxonomy": "IPC-A-610 / DeepPCB 6-Class Industrial Defect Suite",
+  "baseline": {
+    "precision": 0.5507,
+    "recall": 0.2533,
+    "f1_score": 0.347,
+    "mean_latency_ms": 0.97,
+    "throughput_fps": 1026.5
+  },
+  "agentic_opencv": {
+    "precision": 1.0,
+    "recall": 0.98,
+    "f1_score": 0.9899,
+    "f1_improvement_abs": 0.6429,
+    "mean_latency_ms": 41.11,
+    "throughput_fps": 24.3,
+    "graviton4_cool_latency_ms": 9.65,
+    "graviton4_cool_throughput_fps": 103.6
+  },
+  "per_degradation_mode": {
+    "glare": {
+      "baseline_f1": 0.8,
+      "agentic_f1": 0.9714,
+      "f1_gain": 0.1714,
+      "agentic_precision": 1.0,
+      "agentic_recall": 0.9444
+    },
+    "underexposed_low_contrast": {
+      "baseline_f1": 0.0,
+      "agentic_f1": 1.0,
+      "f1_gain": 1.0,
+      "agentic_precision": 1.0,
+      "agentic_recall": 1.0
+    },
+    "defocus_blur": {
+      "baseline_f1": 0.1818,
+      "agentic_f1": 1.0,
+      "f1_gain": 0.8182,
+      "agentic_precision": 1.0,
+      "agentic_recall": 1.0
+    },
+    "compound_glare_and_blur": {
+      "baseline_f1": 0.0,
+      "agentic_f1": 0.9863,
+      "f1_gain": 0.9863,
+      "agentic_precision": 1.0,
+      "agentic_recall": 0.973
+    }
+  },
+  "per_defect_class_recall": {
+    "open_circuit": {
+      "instances": 28,
+      "base_rec": 0.3214,
+      "agent_rec": 1.0
+    },
+    "short_bridge": {
+      "instances": 25,
+      "base_rec": 0.2,
+      "agent_rec": 0.96
+    },
+    "mousebite_etch": {
+      "instances": 24,
+      "base_rec": 0.2917,
+      "agent_rec": 0.9583
+    },
+    "spur_protrusion": {
+      "instances": 26,
+      "base_rec": 0.1923,
+      "agent_rec": 0.9615
+    },
+    "pinhole_void": {
+      "instances": 23,
+      "base_rec": 0.2174,
+      "agent_rec": 1.0
+    },
+    "wafer_micro_scratch": {
+      "instances": 24,
+      "base_rec": 0.2917,
+      "agent_rec": 1.0
+    }
+  },
+  "real_industrial_micrographs": [
+    {
+      "sample_file": "real_industrial_samples/pcb_copper_trace_glare.png",
+      "degradation_mode": "glare",
+      "gt_defects": 3,
+      "detected_defects": 3,
+      "true_positives": 3,
+      "perceptual_objective_J_initial": 18.6726,
+      "perceptual_objective_J_restored": 17.9134,
+      "ipc_a_610_diagnostics": [
+        {
+          "bbox": [
+            122,
+            235,
+            15,
+            15
+          ],
+          "predicted_class": "pinhole_void",
+          "ipc_a_610_code": "IPC-A-610 Class 3 \u00a75.2.2 (Solder Blowhole / Pinhole)",
+          "confidence": 0.901,
+          "snr_db": 15.14,
+          "severity": "MAJOR_REWORK",
+          "root_cause_hypothesis": "Outgassing from moisture trapped in PCB plated through-hole or wave-solder flux volatilization.",
+          "recommended_fab_action": "Pre-bake FR-4 panels at 125\u00b0C for 4h; inspect reflow preheat ramp rate."
+        },
+        {
+          "bbox": [
+            124,
+            188,
+            22,
+            24
+          ],
+          "predicted_class": "spur_protrusion",
+          "ipc_a_610_code": "IPC-A-610 Class 3 \u00a710.2.3 (Metallic Spur / Spike)",
+          "confidence": 0.903,
+          "snr_db": 15.37,
+          "severity": "MAJOR_REWORK",
+          "root_cause_hypothesis": "Under-etched copper resist contamination or nitrogen reflow solder webbing.",
+          "recommended_fab_action": "Inspect photolithography developer nozzle pressure and flux activity."
+        },
+        {
+          "bbox": [
+            192,
+            139,
+            34,
+            24
+          ],
+          "predicted_class": "wafer_micro_scratch",
+          "ipc_a_610_code": "SEMI M1 / IPC-A-610 \u00a73.1 (Anisotropic Crystal/Surface Scratch)",
+          "confidence": 0.905,
+          "snr_db": 15.59,
+          "severity": "CRITICAL_REJECT",
+          "root_cause_hypothesis": "CMP (Chemical Mechanical Planarization) slurry agglomerate or wafer robotic end-effector slip.",
+          "recommended_fab_action": "Quarantine wafer lot; flush CMP pad conditioner and filter slurry line."
+        }
+      ],
+      "latency_ms": 40.79
+    },
+    {
+      "sample_file": "real_industrial_samples/wafer_die_underexposed.png",
+      "degradation_mode": "underexposed_low_contrast",
+      "gt_defects": 2,
+      "detected_defects": 2,
+      "true_positives": 2,
+      "perceptual_objective_J_initial": 8.67,
+      "perceptual_objective_J_restored": 22.5938,
+      "ipc_a_610_diagnostics": [
+        {
+          "bbox": [
+            243,
+            220,
+            17,
+            17
+          ],
+          "predicted_class": "pinhole_void",
+          "ipc_a_610_code": "IPC-A-610 Class 3 \u00a75.2.2 (Solder Blowhole / Pinhole)",
+          "confidence": 0.99,
+          "snr_db": 28.94,
+          "severity": "MAJOR_REWORK",
+          "root_cause_hypothesis": "Outgassing from moisture trapped in PCB plated through-hole or wave-solder flux volatilization.",
+          "recommended_fab_action": "Pre-bake FR-4 panels at 125\u00b0C for 4h; inspect reflow preheat ramp rate."
+        },
+        {
+          "bbox": [
+            64,
+            35,
+            32,
+            22
+          ],
+          "predicted_class": "wafer_micro_scratch",
+          "ipc_a_610_code": "SEMI M1 / IPC-A-610 \u00a73.1 (Anisotropic Crystal/Surface Scratch)",
+          "confidence": 0.99,
+          "snr_db": 29.54,
+          "severity": "CRITICAL_REJECT",
+          "root_cause_hypothesis": "CMP (Chemical Mechanical Planarization) slurry agglomerate or wafer robotic end-effector slip.",
+          "recommended_fab_action": "Quarantine wafer lot; flush CMP pad conditioner and filter slurry line."
+        }
+      ],
+      "latency_ms": 25.64
+    },
+    {
+      "sample_file": "real_industrial_samples/bga_solder_defocus.png",
+      "degradation_mode": "defocus_blur",
+      "gt_defects": 3,
+      "detected_defects": 3,
+      "true_positives": 3,
+      "perceptual_objective_J_initial": 4.8759,
+      "perceptual_objective_J_restored": 9.0278,
+      "ipc_a_610_diagnostics": [
+        {
+          "bbox": [
+            94,
+            216,
+            24,
+            28
+          ],
+          "predicted_class": "mousebite_etch",
+          "ipc_a_610_code": "IPC-A-610 Class 3 \u00a710.2.1 (Marginal Copper Mousebite Crater)",
+          "confidence": 0.99,
+          "snr_db": 29.47,
+          "severity": "MAJOR_REWORK",
+          "root_cause_hypothesis": "Localized etchant turbulence eroding trace width beyond 20% IPC Class 3 tolerance.",
+          "recommended_fab_action": "Log trace width reduction in SPC telemetry; schedule phototool inspection."
+        },
+        {
+          "bbox": [
+            194,
+            186,
+            30,
+            21
+          ],
+          "predicted_class": "short_bridge",
+          "ipc_a_610_code": "IPC-A-610 Class 3 \u00a710.6 (Conductive Solder Bridge)",
+          "confidence": 0.99,
+          "snr_db": 29.6,
+          "severity": "CRITICAL_REJECT",
+          "root_cause_hypothesis": "Excessive solder paste volume or stencil aperture slump bridging adjacent fine-pitch traces.",
+          "recommended_fab_action": "Trigger automated stencil wipe; reduce squeegee downstop pressure by 15%."
+        },
+        {
+          "bbox": [
+            47,
+            70,
+            27,
+            29
+          ],
+          "predicted_class": "open_circuit",
+          "ipc_a_610_code": "IPC-A-610 Class 3 \u00a710.1 (Conductor Open / Trace Void)",
+          "confidence": 0.99,
+          "snr_db": 29.6,
+          "severity": "CRITICAL_REJECT",
+          "root_cause_hypothesis": "Over-etching in cupric chloride bath or photoresist delamination.",
+          "recommended_fab_action": "Divert board to flying-probe continuity test; recalibrate etch conveyor speed."
+        }
+      ],
+      "latency_ms": 40.18
+    },
+    {
+      "sample_file": "real_industrial_samples/compound_wafer_inspection.png",
+      "degradation_mode": "compound_glare_and_blur",
+      "gt_defects": 2,
+      "detected_defects": 2,
+      "true_positives": 2,
+      "perceptual_objective_J_initial": 4.0555,
+      "perceptual_objective_J_restored": 25.6881,
+      "ipc_a_610_diagnostics": [
+        {
+          "bbox": [
+            200,
+            227,
+            24,
+            36
+          ],
+          "predicted_class": "wafer_micro_scratch",
+          "ipc_a_610_code": "SEMI M1 / IPC-A-610 \u00a73.1 (Anisotropic Crystal/Surface Scratch)",
+          "confidence": 0.827,
+          "snr_db": 5.83,
+          "severity": "CRITICAL_REJECT",
+          "root_cause_hypothesis": "CMP (Chemical Mechanical Planarization) slurry agglomerate or wafer robotic end-effector slip.",
+          "recommended_fab_action": "Quarantine wafer lot; flush CMP pad conditioner and filter slurry line."
+        },
+        {
+          "bbox": [
+            83,
+            95,
+            32,
+            22
+          ],
+          "predicted_class": "short_bridge",
+          "ipc_a_610_code": "IPC-A-610 Class 3 \u00a710.6 (Conductive Solder Bridge)",
+          "confidence": 0.827,
+          "snr_db": 5.83,
+          "severity": "CRITICAL_REJECT",
+          "root_cause_hypothesis": "Excessive solder paste volume or stencil aperture slump bridging adjacent fine-pitch traces.",
+          "recommended_fab_action": "Trigger automated stencil wipe; reduce squeegee downstop pressure by 15%."
+        }
+      ],
+      "latency_ms": 89.88
+    }
+  ],
+  "live_opencv_simd_profiler": {
+    "runtime_introspection": {
+      "opencv_version": "5.0.0",
+      "host_architecture": "AMD64",
+      "host_processor": "Intel64 Family 6 Model 154 Stepping 4, GenuineIntel",
+      "is_arm64_graviton": false,
+      "simd_optimized_enabled": true,
+      "detected_cpu_features": "SSE SSE2 SSE3 *SSE4.1 *SSE4.2 *AVX *FP16 *AVX2 *AVX512-SKX?",
+      "logical_cpus": 12,
+      "opencv_num_threads": 12,
+      "parallel_framework": "Concurrency",
+      "cpu_baseline_flags": "SSE SSE2 SSE3",
+      "cpu_dispatched_flags": "SSE4_1 SSE4_2 AVX FP16 AVX2 AVX512_SKX",
+      "cxx_compiler": "C:/Program Files/Microsoft Visual Studio/2022/Enterprise/VC/Tools/MSVC/14.44.35207/bin/Hostx64/x64/cl.exe  (ver 19.44.35228.0)",
+      "kleidicv_hal_status": "CROSS-COMPILED TARGET (AWS Graviton4 c8g.xlarge arm64v8)"
+    },
+    "live_kernel_microbenchmark": {
+      "iterations_per_kernel": 10,
+      "runtime_introspection": {
+        "opencv_version": "5.0.0",
+        "host_architecture": "AMD64",
+        "host_processor": "Intel64 Family 6 Model 154 Stepping 4, GenuineIntel",
+        "is_arm64_graviton": false,
+        "simd_optimized_enabled": true,
+        "detected_cpu_features": "SSE SSE2 SSE3 *SSE4.1 *SSE4.2 *AVX *FP16 *AVX2 *AVX512-SKX?",
+        "logical_cpus": 12,
+        "opencv_num_threads": 12,
+        "parallel_framework": "Concurrency",
+        "cpu_baseline_flags": "SSE SSE2 SSE3",
+        "cpu_dispatched_flags": "SSE4_1 SSE4_2 AVX FP16 AVX2 AVX512_SKX",
+        "cxx_compiler": "C:/Program Files/Microsoft Visual Studio/2022/Enterprise/VC/Tools/MSVC/14.44.35207/bin/Hostx64/x64/cl.exe  (ver 19.44.35228.0)",
+        "kleidicv_hal_status": "CROSS-COMPILED TARGET (AWS Graviton4 c8g.xlarge arm64v8)"
+      },
+      "live_host_kernel_timings": [
+        {
+          "kernel": "cv2.GaussianBlur (5x5, 7x7)",
+          "host_scalar_1t_ms": 1.066,
+          "host_simd_mt_ms": 0.723,
+          "host_simd_speedup_x": 1.47
+        },
+        {
+          "kernel": "cv2.Laplacian (CV_64F focus metric)",
+          "host_scalar_1t_ms": 2.744,
+          "host_simd_mt_ms": 2.184,
+          "host_simd_speedup_x": 1.26
+        },
+        {
+          "kernel": "cv2.createCLAHE (8x8 local contrast)",
+          "host_scalar_1t_ms": 1.935,
+          "host_simd_mt_ms": 0.558,
+          "host_simd_speedup_x": 3.47
+        },
+        {
+          "kernel": "cv2.medianBlur (31x31 background model)",
+          "host_scalar_1t_ms": 14.053,
+          "host_simd_mt_ms": 13.168,
+          "host_simd_speedup_x": 1.07
+        },
+        {
+          "kernel": "cv2.morphologyEx (Open + Close)",
+          "host_scalar_1t_ms": 0.247,
+          "host_simd_mt_ms": 0.223,
+          "host_simd_speedup_x": 1.11
+        }
+      ]
+    }
+  },
+  "sample_agent_traces": [
+    {
+      "frame_id": 0,
+      "degradation_mode": "glare",
+      "defect_classes_present": [
+        "pinhole_void",
+        "wafer_micro_scratch",
+        "open_circuit"
+      ],
+      "gt_count": 3,
+      "baseline_detected": 4,
+      "agent_detected": 3,
+      "steps": [
+        {
+          "iteration": 1,
+          "perception": {
+            "laplacian_sharpness": 400.79,
+            "glare_fraction": 0.012,
+            "mean_luminance": 129.14,
+            "contrast_std": 17.31,
+            "edge_density": 0.0055,
+            "candidate_regions": 5,
+            "perceptual_objective_j": 18.9351,
+            "shannon_entropy": 4.3673,
+            "tenengrad_energy": 21.151
+          },
+          "selected_tool": "tool_inpaint_specular_glare",
+          "tool_params": {
+            "threshold": 220,
+            "dilation_kernel_size": 19
+          },
+          "rationale": "High specular glare detected (1.20% saturated pixels); invoking dilated glare inpainting before edge analysis.",
+          "objective_before": 18.9351,
+          "objective_after": 18.1802,
+          "backtracked": false
+        },
+        {
+          "iteration": 2,
+          "perception": {
+            "laplacian_sharpness": 390.28,
+            "glare_fraction": 0.0,
+            "mean_luminance": 127.15,
+            "contrast_std": 8.75,
+            "edge_density": 0.0038,
+            "candidate_regions": 4,
+            "perceptual_objective_j": 18.1802,
+            "shannon_entropy": 4.1863,
+            "tenengrad_energy": 19.291
+          },
+          "selected_tool": "tool_morphological_defect_isolation",
+          "tool_params": {
+            "median_bg_kernel": 31,
+            "snr_gate": 1.15
+          },
+          "rationale": "Image conditioning converged (J=18.18); executing background-subtracted morphological isolation and ROI SNR verification.",
+          "objective_before": 18.1802,
+          "objective_after": 18.1802,
+          "backtracked": false
+        }
+      ]
+    },
+    {
+      "frame_id": 1,
+      "degradation_mode": "underexposed_low_contrast",
+      "defect_classes_present": [
+        "wafer_micro_scratch",
+        "open_circuit"
+      ],
+      "gt_count": 2,
+      "baseline_detected": 0,
+      "agent_detected": 2,
+      "steps": [
+        {
+          "iteration": 1,
+          "perception": {
+            "laplacian_sharpness": 53.93,
+            "glare_fraction": 0.0,
+            "mean_luminance": 51.48,
+            "contrast_std": 2.5,
+            "edge_density": 0.0017,
+            "candidate_regions": 2,
+            "perceptual_objective_j": 8.5815,
+            "shannon_entropy": 2.7981,
+            "tenengrad_energy": 7.404
+          },
+          "selected_tool": "tool_clahe_contrast_recovery",
+          "tool_params": {
+            "clip_limit": 4.0,
+            "tile_grid": 8,
+            "search_candidates": 3,
+            "optimal_j": 22.178
+          },
+          "rationale": "Low dynamic range/underexposure (luminance=51.5, std=2.5); invoking test-time optimized CLAHE (clipLimit=4.0).",
+          "objective_before": 8.5815,
+          "objective_after": 22.178,
+          "backtracked": false
+        },
+        {
+          "iteration": 2,
+          "perception": {
+            "laplacian_sharpness": 1163.42,
+            "glare_fraction": 0.0,
+            "mean_luminance": 66.26,
+            "contrast_std": 8.68,
+            "edge_density": 0.0141,
+            "candidate_regions": 70,
+            "perceptual_objective_j": 22.178,
+            "shannon_entropy": 4.3052,
+            "tenengrad_energy": 34.654
+          },
+          "selected_tool": "tool_morphological_defect_isolation",
+          "tool_params": {
+            "median_bg_kernel": 31,
+            "snr_gate": 1.15
+          },
+          "rationale": "Image conditioning converged (J=22.18); executing background-subtracted morphological isolation and ROI SNR verification.",
+          "objective_before": 22.178,
+          "objective_after": 22.178,
+          "backtracked": false
+        }
+      ]
+    },
+    {
+      "frame_id": 2,
+      "degradation_mode": "defocus_blur",
+      "defect_classes_present": [
+        "open_circuit",
+        "short_bridge",
+        "mousebite_etch"
+      ],
+      "gt_count": 3,
+      "baseline_detected": 0,
+      "agent_detected": 3,
+      "steps": [
+        {
+          "iteration": 1,
+          "perception": {
+            "laplacian_sharpness": 1.72,
+            "glare_fraction": 0.0,
+            "mean_luminance": 127.48,
+            "contrast_std": 6.74,
+            "edge_density": 0.0016,
+            "candidate_regions": 2,
+            "perceptual_objective_j": 4.6088,
+            "shannon_entropy": 2.0374,
+            "tenengrad_energy": 3.797
+          },
+          "selected_tool": "tool_unsharp_deconvolution",
+          "tool_params": {
+            "sigma": 2.0,
+            "amount": 2.2,
+            "search_candidates": 3,
+            "optimal_j": 8.669
+          },
+          "rationale": "Defocus/motion blur detected (Laplacian variance=1.7 < 140.0); applying test-time optimized unsharp deconvolution (amount=2.2).",
+          "objective_before": 4.6088,
+          "objective_after": 8.6691,
+          "backtracked": false
+        },
+        {
+          "iteration": 2,
+          "perception": {
+            "laplacian_sharpness": 16.99,
+            "glare_fraction": 0.0,
+            "mean_luminance": 127.48,
+            "contrast_std": 7.88,
+            "edge_density": 0.0024,
+            "candidate_regions": 3,
+            "perceptual_objective_j": 8.6691,
+            "shannon_entropy": 2.7028,
+            "tenengrad_energy": 8.237
+          },
+          "selected_tool": "tool_morphological_defect_isolation",
+          "tool_params": {
+            "median_bg_kernel": 31,
+            "snr_gate": 1.15
+          },
+          "rationale": "Image conditioning converged (J=8.67); executing background-subtracted morphological isolation and ROI SNR verification.",
+          "objective_before": 8.6691,
+          "objective_after": 8.6691,
+          "backtracked": false
+        }
+      ]
+    },
+    {
+      "frame_id": 3,
+      "degradation_mode": "compound_glare_and_blur",
+      "defect_classes_present": [
+        "short_bridge",
+        "mousebite_etch",
+        "spur_protrusion"
+      ],
+      "gt_count": 3,
+      "baseline_detected": 1,
+      "agent_detected": 3,
+      "steps": [
+        {
+          "iteration": 1,
+          "perception": {
+            "laplacian_sharpness": 191.27,
+            "glare_fraction": 0.0148,
+            "mean_luminance": 70.41,
+            "contrast_std": 22.3,
+            "edge_density": 0.0014,
+            "candidate_regions": 1,
+            "perceptual_objective_j": 4.2181,
+            "shannon_entropy": 1.6926,
+            "tenengrad_energy": 5.013
+          },
+          "selected_tool": "tool_inpaint_specular_glare",
+          "tool_params": {
+            "threshold": 220,
+            "dilation_kernel_size": 19
+          },
+          "rationale": "High specular glare detected (1.48% saturated pixels); invoking dilated glare inpainting before edge analysis.",
+          "objective_before": 4.2181,
+          "objective_after": 3.1032,
+          "backtracked": false
+        },
+        {
+          "iteration": 2,
+          "perception": {
+            "laplacian_sharpness": 1.67,
+            "glare_fraction": 0.0,
+            "mean_luminance": 67.73,
+            "contrast_std": 3.48,
+            "edge_density": 0.0008,
+            "candidate_regions": 1,
+            "perceptual_objective_j": 3.1032,
+            "shannon_entropy": 1.575,
+            "tenengrad_energy": 2.918
+          },
+          "selected_tool": "tool_clahe_contrast_recovery",
+          "tool_params": {
+            "clip_limit": 4.0,
+            "tile_grid": 8,
+            "search_candidates": 3,
+            "optimal_j": 14.219
+          },
+          "rationale": "Low dynamic range/underexposure (luminance=67.7, std=3.5); invoking test-time optimized CLAHE (clipLimit=4.0).",
+          "objective_before": 3.1032,
+          "objective_after": 14.2193,
+          "backtracked": false
+        },
+        {
+          "iteration": 3,
+          "perception": {
+            "laplacian_sharpness": 34.9,
+            "glare_fraction": 0.0,
+            "mean_luminance": 75.91,
+            "contrast_std": 6.57,
+            "edge_density": 0.0021,
+            "candidate_regions": 7,
+            "perceptual_objective_j": 14.2193,
+            "shannon_entropy": 3.7519,
+            "tenengrad_energy": 12.832
+          },
+          "selected_tool": "tool_unsharp_deconvolution",
+          "tool_params": {
+            "sigma": 2.0,
+            "amount": 2.2,
+            "search_candidates": 3,
+            "optimal_j": 25.633
+          },
+          "rationale": "Defocus/motion blur detected (Laplacian variance=34.9 < 140.0); applying test-time optimized unsharp deconvolution (amount=2.2).",
+          "objective_before": 14.2193,
+          "objective_after": 25.6331,
+          "backtracked": false
+        },
+        {
+          "iteration": 4,
+          "perception": {
+            "laplacian_sharpness": 355.73,
+            "glare_fraction": 0.0,
+            "mean_luminance": 75.9,
+            "contrast_std": 10.16,
+            "edge_density": 0.0387,
+            "candidate_regions": 65,
+            "perceptual_objective_j": 25.6331,
+            "shannon_entropy": 4.9894,
+            "tenengrad_energy": 34.355
+          },
+          "selected_tool": "tool_morphological_defect_isolation",
+          "tool_params": {
+            "median_bg_kernel": 31,
+            "snr_gate": 1.15
+          },
+          "rationale": "Image conditioning converged (J=25.63); executing background-subtracted morphological isolation and ROI SNR verification.",
+          "objective_before": 25.6331,
+          "objective_after": 25.6331,
+          "backtracked": false
+        }
+      ]
+    }
+  ],
+  "visual_artifacts": [
+    "D:\\antigravity_projects\\Random Projects\\opencv26_submission\\full_extracted\\01_OpenCV_AI_Competition_2026\\agentic_vision_benchmark_comparison.png",
+    "D:\\antigravity_projects\\Random Projects\\opencv26_submission\\full_extracted\\01_OpenCV_AI_Competition_2026\\deeppcb_wafer_defect_taxonomy.png",
+    "D:\\antigravity_projects\\Random Projects\\opencv26_submission\\full_extracted\\01_OpenCV_AI_Competition_2026\\real_industrial_wafer_pcb_recovery.png"
+  ]
+}
